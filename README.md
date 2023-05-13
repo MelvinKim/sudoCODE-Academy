@@ -29,3 +29,28 @@ This is a system  where students can enroll to different courses. Built using th
 
 #### Notifications service
 1. sends notification to the user via email: welcoming them to sudoCODE academy and listing the selected courses
+
+### API requirements
+#### User
+- GET /api/v1/users
+- GET /api/v1/users/123
+- POST /api/v1/users
+- DELETE /api/v1/users/123
+
+#### Payment
+- GET /api/v1/payments
+- GET /api/v1/payments/123
+- POST /api/v1/payments
+- DELETE /api/v1/payments/123
+
+#### Course
+- GET /api/v1/courses
+- GET /api/v1/courses/123
+- POST /api/v1/courses
+- DELETE /api/v1/courses/123
+
+#### Notification
+- GET /api/v1/notifications
+- GET /api/v1/notifications/123
+- POST /api/v1/notifications
+- DELETE /api/v1/notifications/123
