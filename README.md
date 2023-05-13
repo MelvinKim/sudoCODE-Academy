@@ -6,6 +6,7 @@ This is a system  where students can enroll to different courses. Built using th
  2. Payments
  3. Courses
  4. Notifications
+ 5. each request has a request ID that will help to track the flow of request across the different services
 
 ### When a creating a new student account:
 1. check for duplicate account
