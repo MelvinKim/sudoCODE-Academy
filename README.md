@@ -12,4 +12,4 @@ This is a system  where students can enroll to different courses. Built using th
 2. if there's no duplicate account, we charge the user
 3. then create a user profile and assign a course(s)
 4. send the student notifications via email, for confirmation (include the courses that they have been assigned)
-5.for phase-1, everything works synchronously, with the hope that nothing fails in between :)
+5. for phase-1, everything works synchronously, with the hope that nothing fails in between :)
