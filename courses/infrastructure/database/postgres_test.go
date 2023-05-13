@@ -133,7 +133,7 @@ func TestPostgresDB_GetCourse(t *testing.T) {
 					t.Fatalf("expected course to have a valid description")
 				}
 				if course.Instructor == "" {
-					t.Fatalf("expected course to have a valid instructor name")
+					t.Fatalf("expected course to have a valid instructor's name")
 				}
 			}
 		})
