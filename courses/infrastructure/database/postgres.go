@@ -37,6 +37,7 @@ func Migrate(db *gorm.DB) {
 	tables := []interface{}{
 		&domain.Student{},
 		&domain.Course{},
+		&domain.StudentCourse{},
 	}
 	for _, table := range tables {
 		if err := db.AutoMigrate(table); err != nil {
@@ -78,6 +79,17 @@ func Init() *gorm.DB {
 	return db
 }
 
+// CreateStudent creates a new student in sudocode acaddemy
+func (p *PostgresDB) CreateStudent(
+	ctx context.Context,
+	student *domain.Student,
+) (*domain.Student, error) {
+	if err := p.DB.Create(student).Error; err != nil {
+		return nil, fmt.Errorf("infrastructure: can't create a new student: %v", err)
+	}
+	return student, nil
+}
+
 // CreateCourse creates a new course in sudocode acaddemy
 func (p *PostgresDB) CreateCourse(
 	ctx context.Context,
@@ -114,26 +126,26 @@ func (p *PostgresDB) AssignCourseToStudent(
 	email *string,
 	courseTitle *string,
 ) (*domain.Student, error) {
-	student, err := p.GetStudent(ctx, email)
-	if err != nil {
+	student := &domain.Student{}
+	course := &domain.Course{}
+
+	// Find the student with the given ID
+	if err := p.DB.Where("email = ?", email).First(student).Error; err != nil {
 		return nil, err
-	}
-	if student == nil {
-		return nil, fmt.Errorf("kindly create an account with us in order to purchase a course") // maybe to do some redirect to the signup page
 	}
 
-	course, err := p.GetCourse(ctx, courseTitle)
-	if err != nil {
+	// Find the course with the given ID
+	if err := p.DB.Where("title = ?", courseTitle).First(course).Error; err != nil {
 		return nil, err
 	}
-	for _, c := range student.Courses {
-		if c.UUID == course.UUID {
-			return nil, fmt.Errorf("course %v is already assigned to student %v", c.UUID, student.UUID)
-		}
+
+	// Add the course to the student's courses
+	link := domain.StudentCourse{
+		StudentUUID: student.UUID,
+		CourseUUID:  course.UUID,
 	}
-	student.Courses = append(student.Courses, *course)
-	if err = p.DB.Save(student).Error; err != nil {
-		return nil, fmt.Errorf("error while assigning a student course with UUID %v, title %v", course.UUID, course.Title)
+	if err := p.DB.Create(link).Error; err != nil {
+		return nil, fmt.Errorf("infrastructure: can't create a new student's course: %v", err)
 	}
 
 	return student, nil

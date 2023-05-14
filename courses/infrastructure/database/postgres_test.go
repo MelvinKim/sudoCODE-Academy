@@ -139,3 +139,68 @@ func TestPostgresDB_GetCourse(t *testing.T) {
 		})
 	}
 }
+
+func TestPostgresDB_AssignCourseToStudent(t *testing.T) {
+	ctx := context.Background()
+	p := database.NewPostgresDB()
+	student := &domain.Student{
+		FirstName: gofakeit.FirstName(),
+		LastName:  gofakeit.LastName(),
+		Email:     gofakeit.Email(),
+	}
+	student, err := p.CreateStudent(ctx, student)
+	if err != nil {
+		t.Fatalf("Failed to test create student: %v", err)
+	}
+	course := &domain.Course{
+		Title:       gofakeit.LastName(),
+		Price:       gofakeit.UintRange(10, 50),
+		Description: "A nice course",
+		Instructor:  gofakeit.Name(),
+		Category:    gofakeit.CarMaker(),
+	}
+	course, err = p.CreateCourse(ctx, course)
+	if err != nil {
+		t.Errorf("error while creating test course: %v", err)
+		return
+	}
+
+	type args struct {
+		ctx         context.Context
+		email       *string
+		courseTitle *string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+		{
+			name: "Happy case",
+			args: args{
+				ctx:         ctx,
+				email:       &student.Email,
+				courseTitle: &course.Title,
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := p.AssignCourseToStudent(tt.args.ctx, tt.args.email, tt.args.courseTitle)
+			if err != nil != tt.wantErr {
+				t.Errorf("PostgresDB.AssignCourseToStudent() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && course != nil {
+				var courses []*domain.Course
+				if err := p.DB.Model(course).Association("Students").Find(&courses); err != nil {
+					t.Fatalf("Failed to find student's courses: %v", err)
+				}
+				if len(courses) != 1 {
+					t.Fatalf("Expected 1 course, got %d", len(courses))
+				}
+			}
+		})
+	}
+}
