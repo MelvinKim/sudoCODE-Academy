@@ -54,3 +54,6 @@ This is a system  where students can enroll to different courses. Built using Mi
 - GET /api/v1/notifications/123
 - POST /api/v1/notifications
 - DELETE /api/v1/notifications/123
+
+### Architecture diagram
+<img src="https://res.cloudinary.com/melvinkimathi/image/upload/v1684344120/Screenshot_2023-05-17_at_20.21.01_fmusht.png" alt="Architecture diagram" style="height: 500px; width:1000px;"/>
