@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/MelvinKim/courses/domain"
 	log "github.com/sirupsen/logrus"
@@ -48,26 +47,7 @@ func Migrate(db *gorm.DB) {
 
 // Init initializes a new gorm instance by connecting to a postgres DB instance
 func Init() *gorm.DB {
-	var dsn string
-	if os.Getenv("ENVIRONMENT") == "prod" {
-		dsn = fmt.Sprintf(
-			"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Africa/Nairobi",
-			os.Getenv("DB_HOST"),
-			os.Getenv("DB_USER"),
-			os.Getenv("DB_PASSWORD"),
-			os.Getenv("DB_NAME"),
-			os.Getenv("DB_PORT"),
-		)
-	} else {
-		dsn = fmt.Sprintf(
-			"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Africa/Nairobi",
-			os.Getenv("DB_HOST"),
-			os.Getenv("DB_USER"),
-			os.Getenv("DB_PASSWORD"),
-			os.Getenv("TEST_DB_NAME"),
-			os.Getenv("DB_PORT"),
-		)
-	}
+	dsn := "host=postgresql-service.default.svc.cluster.local port=5432 user=postgres dbname=sudocode password=postgres sslmode=disable"
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
