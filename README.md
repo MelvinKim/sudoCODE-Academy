@@ -1,4 +1,4 @@
-# sudoCODE-Academy
+# sudoCODE-Academy (WORK IN PROGRESS)
 This is a system  where students can enroll to different courses. Built using Microservices architecture and runs on Kubernetes (Work in progress)
 
 ### Services:
